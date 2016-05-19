@@ -28,6 +28,11 @@ public class BeatBoxFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // 保留实例设置为true时，当设置发生变化比如旋转时，Fragment的视图被destroy，但是Fragment本身不
+        // 不会被destroy，和持有它的Activity分离，则目前不被任何的Activity持有，当Activity重新创建时重
+        // 新与Activity连接，所以Fragment保留的时间为与旧的Activity分离到与新的Activity连接之间的时间
+        setRetainInstance(true);
+
         mBeatBox = new BeatBox(getActivity());
     }
 
