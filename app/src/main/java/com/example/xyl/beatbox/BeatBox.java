@@ -66,6 +66,21 @@ public class BeatBox {
         sound.setSoundId(soundId);
     }
 
+    public void play(Sound sound) {
+        Integer soundId = sound.getSoundId();
+        if (soundId == null) {
+            return;
+        }
+        // 参数分别是SoundID，左声道音量，右声道音量，优先级(忽略)，循环次数，播放速度
+        // 循环次数：传0表示只播放一次，传-1表示永远循环
+        mSoundPool.play(soundId, 1.0f, 1.0f, 1, 0, 1.0f);
+    }
+
+    // 释放资源
+    public void release() {
+        mSoundPool.release();
+    }
+
     public List<Sound> getSounds() {
         return mSounds;
     }
