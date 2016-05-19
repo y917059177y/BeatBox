@@ -7,6 +7,9 @@ public class Sound {
     private String mAssetPath;
     private String mName;
 
+    // 加载进SoundPool的每个声音都有一个Integer的ID
+    private Integer mSoundId;
+
     public Sound(String assetPath) {
         mAssetPath = assetPath;
         String[] components = assetPath.split("/");
@@ -20,5 +23,13 @@ public class Sound {
 
     public String getName() {
         return mName;
+    }
+
+    public Integer getSoundId() {
+        return mSoundId;
+    }
+
+    public void setSoundId(Integer soundId) {
+        mSoundId = soundId;
     }
 }

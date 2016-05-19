@@ -1,7 +1,10 @@
 package com.example.xyl.beatbox;
 
 import android.content.Context;
+import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.util.Log;
 
 import java.io.IOException;
@@ -18,11 +21,19 @@ public class BeatBox {
 
     public static final String SOUNDS_FOLDER = "sample_sounds";
 
+    // 同时播放的最大声音数量
+    public static final int MAX_SOUNDS = 5;
+
     private AssetManager mAssets;
     private List<Sound> mSounds = new ArrayList<>();
 
+    // SoundPool的优点是响应快
+    private SoundPool mSoundPool;
+
     public BeatBox(Context context) {
         mAssets = context.getAssets();
+        // 这个老的构造方法已经被弃用了，但是为了兼容性我们依然使用它
+        mSoundPool = new SoundPool(MAX_SOUNDS, AudioManager.STREAM_MUSIC, 0);
         loadSounds();
     }
 
@@ -37,10 +48,22 @@ public class BeatBox {
         }
 
         for (String filename : soundNames) {
-            String assetPath = SOUNDS_FOLDER + "/" + filename;
-            Sound sound = new Sound(assetPath);
-            mSounds.add(sound);
+            try {
+                String assetPath = SOUNDS_FOLDER + "/" + filename;
+                Sound sound = new Sound(assetPath);
+                load(sound);
+                mSounds.add(sound);
+            } catch (IOException e) {
+                Log.i(TAG, "Could not load sound " + filename, e);
+            }
+
         }
+    }
+
+    private void load(Sound sound) throws IOException {
+        AssetFileDescriptor afd = mAssets.openFd(sound.getAssetPath());
+        int soundId = mSoundPool.load(afd, 1);
+        sound.setSoundId(soundId);
     }
 
     public List<Sound> getSounds() {
